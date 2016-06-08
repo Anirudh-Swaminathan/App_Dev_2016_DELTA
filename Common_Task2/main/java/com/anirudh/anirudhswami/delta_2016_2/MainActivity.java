@@ -1,21 +1,18 @@
 package com.anirudh.anirudhswami.delta_2016_2;
 
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+
+import android.support.v7.app.NotificationCompat;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.transition.TransitionManager;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+
 import android.widget.Toast;
 
 import java.util.List;
@@ -24,14 +21,43 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int SPEECH_REQUEST_CODE = 0;
     String command;
+    String shap;
+    String size;
 
-    float maxX,maxY;
-    DisplayMetrics dm = new DisplayMetrics();
+    //float maxX,maxY;
+
+    CanvasJav vi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        vi = new CanvasJav(MainActivity.this);
+        //setContentView(R.layout.activity_main);
+        //Inflate custom view
+        setContentView(vi);
+        //Defaults
+        shap = "square";
+        size = "small";
+
+        //Setiing the notification
+        StringBuffer buff = new StringBuffer();
+        buff.append("POSITION\n'UP': Move the drawable up\n'Down': Move the drawable down\n'Left': Move the drawable left\n'Right': Move the drawable right\nSHAPE" +
+                "\n'Circle': Change shape of drawable to circle\n'Square': Change shape of drawable to square\n'Rectangle': Change shape of drawable to a rectangle" +
+                "\n'Oval': Change the shape of the drawable to oval\nSIZE\n'Small': Make the drawable small\n'Medium': Make the drawable medium size" +
+                "\n'Large': Make the drawable large size\nPLEASE HAVE INTERNET CONNECTION, and Please remember these commands");
+        //showMessage("COMMANDS",buff.toString());
+
+        AlertDialog.Builder abu= new AlertDialog.Builder(MainActivity.this);
+        abu.setMessage(buff.toString()).setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert = abu.create();
+        alert.setTitle("COMMANDS");
+        alert.show();
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
@@ -44,18 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        //Handle ActionBar item clicks here. The actionbar will
-        //automatically handle clicks on the home/up button as long
-        //as you specify a parent activity in android manifests.xml
+
         int id=item.getItemId();
-        /*
-        if(id==R.id.action_settings){
-            return true;
-        }
-        */
         switch(id) {
             case R.id.speech:
-                Toast.makeText(getApplicationContext(), "Command icon is selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Command icon is selected", Toast.LENGTH_SHORT).show();
                 displaySpeechRecognizer();
                 //moveDrawab();
                 break;
@@ -86,72 +105,68 @@ public class MainActivity extends AppCompatActivity {
             String spokenText = results.get(0);
             command = spokenText;
             // Do something with spokenText
-            Toast.makeText(MainActivity.this,"The spoken word was "+spokenText,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this,"The spoken word was "+spokenText,Toast.LENGTH_SHORT).show();
         }
+        //Move the drawable
         moveDrawab();
         super.onActivityResult(requestCode, resultCode, data);
     }
+
     public void moveDrawab(){
-        Toast.makeText(MainActivity.this,"Command was "+command,Toast.LENGTH_SHORT).show();
-        ViewGroup AniLay = (ViewGroup) findViewById(R.id.AniLayout);
-        TransitionManager.beginDelayedTransition(AniLay);
-        View image = findViewById(R.id.moveIt);
-        ImageView img = (ImageView) image;
-        float x,y;
-        x = img.getX();
-        y = img.getY();
-        //change position
-        //RelativeLayout.LayoutParams positionRules = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.WRAP_CONTENT);
-        ViewGroup.LayoutParams sizeRules = image.getLayoutParams();
+        //Toast.makeText(MainActivity.this,"Command was "+command,Toast.LENGTH_SHORT).show();
+        //setPos and setSize are defined by me(Anirudh Swaminathan)
+        //setPos sets the position, while setSize changes the size and shape of the drawable
         switch (command){
             case "up":
-                /*
-                if(positionRules.topMargin>=10) {
-                    Toast.makeText(MainActivity.this,"Positon top is "+positionRules.topMargin,Toast.LENGTH_SHORT).show();
-                    positionRules.topMargin = positionRules.topMargin - 10;
-                    Toast.makeText(MainActivity.this,"Positon top is "+positionRules.topMargin,Toast.LENGTH_SHORT).show();
-                }
-                */
-                if(y>=74){
-                    Toast.makeText(MainActivity.this,"Positon top was "+y,Toast.LENGTH_SHORT).show();
-                    y-=50;
-                    img.setX(x);
-                    img.setY(y);
-                    Toast.makeText(MainActivity.this,"Positon top is "+y,Toast.LENGTH_SHORT).show();
-                }
+                vi.setPos(0,-30);
                 break;
             case "down":
-                /*
-                if(positionRules.bottomMargin>=10){
-                    positionRules.bottomMargin = positionRules.bottomMargin -10;
-                }
-                */
-                Toast.makeText(MainActivity.this,"Positon top was "+y,Toast.LENGTH_SHORT).show();
-                if(y<=630) {
-                    y += 50;
-                }
-                img.setX(x);
-                img.setY(y);
-                Toast.makeText(MainActivity.this,"Positon top is "+y,Toast.LENGTH_SHORT).show();
+                vi.setPos(0,30);
                 break;
             case "left":
-                if(x>=74){
-                    x-=50;
-                    img.setX(x);
-                    img.setY(y);
-                }
+                vi.setPos(-30,0);
                 break;
             case "right":
-                if(x<=390) {
-                    x += 50;
-                }
-                img.setX(x);
-                img.setY(y);
-                Toast.makeText(MainActivity.this,"Left now is "+x,Toast.LENGTH_SHORT).show();
+                vi.setPos(30,0);
+                break;
+            case "small":
+                size = "small";
+                vi.setSize(shap,size);
+                break;
+            case "medium":
+                size = "medium";
+                vi.setSize(shap,size);
+                break;
+            case "large":
+                size = "large";
+                vi.setSize(shap,size);
+                break;
+            case "square":
+                shap = "square";
+                vi.setSize(shap,size);
+                break;
+            case "rectangle":
+                shap = "rect";
+                vi.setSize(shap,size);
+                break;
+            case "circle":
+                shap = "circle";
+                vi.setSize(shap,size);
+                break;
+            case "oval":
+                shap = "oval";
+                vi.setSize(shap,size);
                 break;
             default:
                 Toast.makeText(MainActivity.this,"Wrong command",Toast.LENGTH_SHORT).show();
         }
-        //image.setLayoutParams(positionRules);
+    }
+
+    public void showMessage(String title,String message){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
     }
 }
