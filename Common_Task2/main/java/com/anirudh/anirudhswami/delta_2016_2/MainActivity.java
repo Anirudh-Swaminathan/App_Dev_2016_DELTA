@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         buff.append("POSITION\n'UP': Move the drawable up\n'Down': Move the drawable down\n'Left': Move the drawable left\n'Right': Move the drawable right\nSHAPE" +
                 "\n'Circle': Change shape of drawable to circle\n'Square': Change shape of drawable to square\n'Rectangle': Change shape of drawable to a rectangle" +
                 "\n'Oval': Change the shape of the drawable to oval\nSIZE\n'Small': Make the drawable small\n'Medium': Make the drawable medium size" +
-                "\n'Large': Make the drawable large size\nPLEASE HAVE INTERNET CONNECTION, and Please remember these commands");
+                "\n'Large': Make the drawable large size\nPLEASE HAVE INTERNET CONNECTION\nPress COMMAND button in top right to give commands to the app");
         //showMessage("COMMANDS",buff.toString());
 
         AlertDialog.Builder abu= new AlertDialog.Builder(MainActivity.this);
@@ -160,13 +160,5 @@ public class MainActivity extends AppCompatActivity {
             default:
                 Toast.makeText(MainActivity.this,"Wrong command",Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void showMessage(String title,String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 }
